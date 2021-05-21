@@ -32,17 +32,34 @@ const getPassword = promisify(keychain.getPassword).bind(keychain);
 
 let MY_ACCOUNT_ID;
 
-const WMATIC_TOKEN =     '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270';
-const USDT_TOKEN   =     '0xc2132D05D31c914a87C6611C10748AEb04B58e8F';
-const USDC_TOKEN   =     '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
-const DAI_TOKEN    =     '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063';
-const amWBTC_TOKEN =     '0x5c2ed810328349100A66B82b78a1791B101C9D61';
-const amAAVE_TOKEN =     '0x1d2a0E5EC8E5bBDCA5CB219e649B565d8e5c3360';
-const amWMATIC_TOKEN =   '0x8df3aad3a84da6b69a4da8aec3ea40d9091b2ac4';
-const amWETH_TOKEN =     '0x28424507fefb6f7f8e9d3860f56504e4e5f5f390';
-const amUSDT_TOKEN =     '0x60D55F02A771d515e077c9C2403a1ef324885CeC';
-const amDebtUSDT_TOKEN = '0x8038857fd47108a07d1f6bf652ef1cbec279a2f3';
-const curveLP_TOKEN =    '0xE7a24EF0C5e95Ffb0f6684b813A78F2a3AD7D171';
+const WMATIC_TOKEN =        '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270';
+const USDT_TOKEN   =        '0xc2132D05D31c914a87C6611C10748AEb04B58e8F';
+const USDC_TOKEN   =        '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+const DAI_TOKEN    =        '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063';
+const amWBTC_TOKEN =        '0x5c2ed810328349100A66B82b78a1791B101C9D61';
+const amAAVE_TOKEN =        '0x1d2a0E5EC8E5bBDCA5CB219e649B565d8e5c3360';
+const amWMATIC_TOKEN =      '0x8df3aad3a84da6b69a4da8aec3ea40d9091b2ac4';
+const amWETH_TOKEN =        '0x28424507fefb6f7f8e9d3860f56504e4e5f5f390';
+const amUSDT_TOKEN =        '0x60D55F02A771d515e077c9C2403a1ef324885CeC';
+const amUSDC_TOKEN =        '0x1a13F4Ca1d028320A707D99520AbFefca3998b7F';
+const amDAI_TOKEN  =        '0x27F8D03b3a2196956ED754baDc28D73be8830A6e';
+const amVarDebtUSDT_TOKEN = '0x8038857fd47108a07d1f6bf652ef1cbec279a2f3';
+const amVarDebtUSDC_TOKEN = '0x248960a9d75edfa3de94f7193eae3161eb349a12';
+const amVarDebtDAI_TOKEN  = '0x75c4d1Fb84429023170086f06E682DcbBF537b7d';
+const curveLP_TOKEN =       '0xE7a24EF0C5e95Ffb0f6684b813A78F2a3AD7D171';
+
+const aaveRewardEarningTokens = [
+    amWBTC_TOKEN,
+    amAAVE_TOKEN,
+    amWMATIC_TOKEN,
+    amWETH_TOKEN,
+    amUSDT_TOKEN,
+    amUSDC_TOKEN,
+    amDAI_TOKEN,
+    amVarDebtUSDT_TOKEN,
+    amVarDebtUSDC_TOKEN,
+    amVarDebtDAI_TOKEN,
+];
 
 const erc20ContractABI = require('./erc20-contract.json');
 const WMATICContract = new web3.eth.Contract(erc20ContractABI, WMATIC_TOKEN);
@@ -98,14 +115,14 @@ const claimCurve = async (claim = true) => {
 
 const claimAave = async (claim = true) => {
     const rewards = await aaveIncentivesControllerContract.methods
-                        .getRewardsBalance([amWBTC_TOKEN, amWETH_TOKEN, amAAVE_TOKEN, amWMATIC_TOKEN, amDebtUSDT_TOKEN, amUSDT_TOKEN], MY_ACCOUNT_ID)
+                        .getRewardsBalance(aaveRewardEarningTokens, MY_ACCOUNT_ID)
                         .call();
     console.log(`Will claim ${web3.utils.fromWei(rewards)} WMATIC for ${MY_ACCOUNT_ID} from AAVE...`);
 
     if(claim) {
         return new Promise((resolve, reject) => {
             aaveIncentivesControllerContract.methods
-                .claimRewards([amWBTC_TOKEN, amWETH_TOKEN, amAAVE_TOKEN, amWMATIC_TOKEN, amDebtUSDT_TOKEN, amUSDT_TOKEN], rewards, MY_ACCOUNT_ID)
+                .claimRewards(aaveRewardEarningTokens, rewards, MY_ACCOUNT_ID)
                 .send()
             .on('transactionHash', hash => {
                 console.log(`AAVE Tx hash: '${hash}'`);
