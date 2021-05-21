@@ -1,0 +1,644 @@
+[
+  {
+    "name": "Deposit",
+    "inputs": [
+      {
+        "name": "provider",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "value",
+        "type": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "name": "Withdraw",
+    "inputs": [
+      {
+        "name": "provider",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "value",
+        "type": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "name": "CommitOwnership",
+    "inputs": [
+      {
+        "name": "admin",
+        "type": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "name": "ApplyOwnership",
+    "inputs": [
+      {
+        "name": "admin",
+        "type": "address",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "name": "Transfer",
+    "inputs": [
+      {
+        "name": "_from",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "_to",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "_value",
+        "type": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "name": "Approval",
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "_spender",
+        "type": "address",
+        "indexed": true
+      },
+      {
+        "name": "_value",
+        "type": "uint256",
+        "indexed": false
+      }
+    ],
+    "anonymous": false,
+    "type": "event"
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_lp_token",
+        "type": "address"
+      },
+      {
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "decimals",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 288
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "claimable_reward",
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      },
+      {
+        "name": "_token",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 1731747
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "claim_rewards",
+    "inputs": [],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "claim_rewards",
+    "inputs": [
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "claim_historic_rewards",
+    "inputs": [
+      {
+        "name": "_reward_tokens",
+        "type": "address[8]"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "claim_historic_rewards",
+    "inputs": [
+      {
+        "name": "_reward_tokens",
+        "type": "address[8]"
+      },
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "set_approve_deposit",
+    "inputs": [
+      {
+        "name": "addr",
+        "type": "address"
+      },
+      {
+        "name": "can_deposit",
+        "type": "bool"
+      }
+    ],
+    "outputs": [],
+    "gas": 35798
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "deposit",
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "deposit",
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "name": "_addr",
+        "type": "address"
+      }
+    ],
+    "outputs": []
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [],
+    "gas": 1794326
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "transfer",
+    "inputs": [
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 6717596
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "transferFrom",
+    "inputs": [
+      {
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 6755546
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "approve",
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 38001
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "increaseAllowance",
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_added_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 40545
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "decreaseAllowance",
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_subtracted_value",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 40569
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "set_rewards",
+    "inputs": [
+      {
+        "name": "_reward_contract",
+        "type": "address"
+      },
+      {
+        "name": "_sigs",
+        "type": "bytes32"
+      },
+      {
+        "name": "_reward_tokens",
+        "type": "address[8]"
+      }
+    ],
+    "outputs": [],
+    "gas": 3752787
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "commit_transfer_ownership",
+    "inputs": [
+      {
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "outputs": [],
+    "gas": 39285
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "function",
+    "name": "accept_transfer_ownership",
+    "inputs": [],
+    "outputs": [],
+    "gas": 39230
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "lp_token",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "gas": 2838
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "balanceOf",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 3083
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "totalSupply",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 2898
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "allowance",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      },
+      {
+        "name": "arg1",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 3358
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "name",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "gas": 13260
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "symbol",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "gas": 11013
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "approved_to_deposit",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      },
+      {
+        "name": "arg1",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "gas": 3448
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "reward_contract",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "gas": 3048
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "reward_tokens",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "gas": 3187
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "reward_balances",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 3323
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "reward_integral",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 3353
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "reward_integral_for",
+    "inputs": [
+      {
+        "name": "arg0",
+        "type": "address"
+      },
+      {
+        "name": "arg1",
+        "type": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "gas": 3598
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "admin",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "gas": 3198
+  },
+  {
+    "stateMutability": "view",
+    "type": "function",
+    "name": "future_admin",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "gas": 3228
+  }
+]
