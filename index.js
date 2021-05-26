@@ -25,7 +25,7 @@ nconf.argv(yargs)
     .file({ file: 'scrape-reinvest.json ' });
 
 const Web3 = require('web3');
-const web3 = new Web3('https://rpc-mainnet.maticvigil.com');
+const web3 = new Web3('https://matic-mainnet.chainstacklabs.com');
 
 const keychain = require('keychain');
 const getPassword = promisify(keychain.getPassword).bind(keychain);
@@ -61,26 +61,26 @@ const aaveRewardEarningTokens = [
     amVarDebtDAI_TOKEN,
 ];
 
-const erc20ContractABI = require('./erc20-contract.json');
+const erc20ContractABI = require('./contracts/erc20.json');
 const WMATICContract = new web3.eth.Contract(erc20ContractABI, WMATIC_TOKEN);
 const USDTContract = new web3.eth.Contract(erc20ContractABI, USDT_TOKEN);
 const USDCContract = new web3.eth.Contract(erc20ContractABI, USDC_TOKEN);
 const DAIContract = new web3.eth.Contract(erc20ContractABI, DAI_TOKEN);
 const curveLPContract = new web3.eth.Contract(erc20ContractABI, curveLP_TOKEN);
 
-const curveGaugeABI = require('./curve-gauge-contract.json');
+const curveGaugeABI = require('./contracts/curve-gauge.json');
 const curveGaugeAddress = '0xe381C25de995d62b453aF8B931aAc84fcCaa7A62';
 const curveGaugeContract = new web3.eth.Contract(curveGaugeABI, curveGaugeAddress);
 
-const curvePoolABI = require('./curve-pool-contract.json');
+const curvePoolABI = require('./contracts/curve-pool.json');
 const curvePoolAddress = '0x445FE580eF8d70FF569aB36e80c647af338db351';
 const curvePoolContract = new web3.eth.Contract(curvePoolABI, curvePoolAddress);
 
-const aaveIncentivesControllerABI = require('./aave-contract.json');
+const aaveIncentivesControllerABI = require('./contracts/aave-incentives.json');
 const aaveIncentivesControllerAddress = '0x357D51124f59836DeD84c8a1730D72B749d8BC23';
 const aaveIncentivesControllerContract = new web3.eth.Contract(aaveIncentivesControllerABI, aaveIncentivesControllerAddress);
 
-const sushiRouterABI = require('./sushiswap-contract.json');
+const sushiRouterABI = require('./contracts/sushiswap.json');
 const sushiRouterAddress = '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506';
 const sushiRouterContract = new web3.eth.Contract(sushiRouterABI, sushiRouterAddress);
 
