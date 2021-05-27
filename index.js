@@ -26,6 +26,7 @@ nconf.argv(yargs)
 
 const Web3 = require('web3');
 const web3 = new Web3('https://matic-mainnet.chainstacklabs.com');
+const BIG_ZERO = new web3.utils.BN('0');
 
 const keychain = require('keychain');
 const getPassword = promisify(keychain.getPassword).bind(keychain);
@@ -83,6 +84,10 @@ const aaveIncentivesControllerContract = new web3.eth.Contract(aaveIncentivesCon
 const sushiRouterABI = require('./contracts/sushiswap.json');
 const sushiRouterAddress = '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506';
 const sushiRouterContract = new web3.eth.Contract(sushiRouterABI, sushiRouterAddress);
+
+const quickswapRouterABI = require('./contracts/quickswap-router.json');
+const quickswapRouterAddress = '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff';
+const quickswapRouterContract = new web3.eth.Contract(quickswapRouterABI, quickswapRouterAddress);
 
 const claimCurve = async (claim = true) => {
     const rewards = await curveGaugeContract.methods
@@ -174,6 +179,9 @@ const swapToStablecoin = async (extra_wmatic, claim = true) => {
     const coin_indices = _.range(3);
     const underlying_coins = await Promise.all(_.map(coin_indices, i => curvePoolContract.methods.underlying_coins(i).call()));
 
+    const swapRouters = [sushiRouterContract, quickswapRouterContract];
+    const swapRouterNames = ['Sushi', 'Quick'];
+
     const currency_token_map = {
         USDC: USDC_TOKEN,
         USDT: USDT_TOKEN,
@@ -194,41 +202,46 @@ const swapToStablecoin = async (extra_wmatic, claim = true) => {
 
     const underlying_coin_indices = _.mapValues(currency_token_map, c => _.findIndex(underlying_coins, x => x == c));
 
+    const amount_out = [{}, {}];
+    const amount_out_lp = [{}, {}];
 
-    const amount_out = {};
-    const amount_out_lp = {};
-
-    await Promise.all(_.map(currency_token_map, async (token, coin) => {
-        amount_out[coin] = (await sushiRouterContract.methods
-                                    .getAmountsOut(wmatic, [WMATIC_TOKEN, token])
-                                    .call())[1];
+    await Promise.all(_.flatMap(swapRouters, (router, routerIndex) => _.map(currency_token_map, async (token, coin) => {
+        amount_out[routerIndex][coin] = (await router.methods
+                                                .getAmountsOut(wmatic, [WMATIC_TOKEN, token])
+                                                .call())[1];
         const currency_in = ['0', '0', '0'];
-        currency_in[underlying_coin_indices[coin]] = amount_out[coin];
-        amount_out_lp[coin] = new web3.utils.BN(await curvePoolContract.methods.calc_token_amount(currency_in, true).call());
-        console.log(`Should yield ${web3.utils.fromWei(amount_out[coin], currency_fromWei_map[coin])} ${coin} (${web3.utils.fromWei(amount_out_lp[coin], lp_fromWei)} tokens)`);
-    }));
+        currency_in[underlying_coin_indices[coin]] = amount_out[routerIndex][coin];
+        amount_out_lp[routerIndex][coin] = new web3.utils.BN(await curvePoolContract.methods.calc_token_amount(currency_in, true).call());
+        console.log(`Should yield ${web3.utils.fromWei(amount_out_lp[routerIndex][coin], lp_fromWei)} tokens (${web3.utils.fromWei(amount_out[routerIndex][coin], currency_fromWei_map[coin])} ${coin}) from ${swapRouterNames[routerIndex]}`);
+    })));
 
-    const highest = _.reduce(amount_out_lp, (max, lp, coin) => (lp.gt(max.lp) ? { coin: coin, lp: lp } : max), { coin: '', lp: 0 });
-    console.log(`Highest is ${highest.coin}`);
+    const highest = _.reduce(amount_out_lp, (max, lp_map, routerIndex) => {
+        const highestThisRouter = _.reduce(lp_map, (max2, lp, coin) => {
+            return (lp.gt(max2.lp) ? { coin: coin, lp: lp } : max2);
+        }, { lp: BIG_ZERO });
+        console.log(`Highest for ${swapRouterNames[routerIndex]} is ${highestThisRouter.coin}`);
+        return highestThisRouter.lp.gt(max.lp) ? { routerIndex: routerIndex, coin: highestThisRouter.coin, lp: highestThisRouter.lp } : max;
+    }, { lp: BIG_ZERO });
+    console.log(`Highest is ${highest.coin} from ${swapRouterNames[highest.routerIndex]}`);
 
     const deadline = Math.floor(DateTime.now().plus({ minutes: 1 }).toSeconds());
     if(claim) {
         return new Promise((resolve, reject) => {
-            sushiRouterContract.methods
+            swapRouters[highest.routerIndex].methods
                 .swapExactTokensForTokens(wmatic,
                                             (new web3.utils.BN(amount_out[highest.coin]))
-                                                .mul(new web3.utils.BN('99'))
-                                                .div(new web3.utils.BN('100')),
+                                                .mul(new web3.utils.BN('995'))
+                                                .div(new web3.utils.BN('1000')),
                                             [WMATIC_TOKEN, currency_token_map[highest.coin]],
                                             MY_ACCOUNT_ID,
                                             deadline
                                         )
                 .send()
             .on('transactionHash', hash => {
-                console.log(`Sushi Tx hash: '${hash}'`);
+                console.log(`${swapRouterNames[highest.routerIndex]} Tx hash: '${hash}'`);
             })
             .on('confirmation', (number, receipt) => {
-                if(number == 0) { console.log(`Sushi confirmation number: ${number}`); }
+                if(number == 0) { console.log(`${swapRouterNames[highest.routerIndex]} confirmation number: ${number}`); }
             })
             .on('receipt', receipt => {
                 resolve(highest.coin);
@@ -302,8 +315,8 @@ const depositToCurve = async (claim = true) => {
             curvePoolContract.methods
                 .add_liquidity(all_three_coins,
                                (new web3.utils.BN(lpAmount))
-                                .mul(new web3.utils.BN('99'))
-                                .div(new web3.utils.BN('100')),
+                                .mul(new web3.utils.BN('995'))
+                                .div(new web3.utils.BN('1000')),
                                true
                             )
                 .send()
@@ -368,6 +381,9 @@ const stakeCurve = async (claim = true) => {
     sushiRouterContract.options.from = MY_ACCOUNT_ID;
     sushiRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
     sushiRouterContract.options.gas = 1000000;
+    quickswapRouterContract.options.from = MY_ACCOUNT_ID;
+    quickswapRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    quickswapRouterContract.options.gas = 1000000;
     curvePoolContract.options.from = MY_ACCOUNT_ID;
     curvePoolContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
     curvePoolContract.options.gas = 1000000;
