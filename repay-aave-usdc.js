@@ -26,6 +26,7 @@ nconf.argv(yargs)
 
 const Web3 = require('web3');
 const web3 = new Web3('https://matic-mainnet.chainstacklabs.com');
+const BIG_ZERO = new web3.utils.BN('0');
 
 const keychain = require('keychain');
 const getPassword = promisify(keychain.getPassword).bind(keychain);
@@ -89,6 +90,10 @@ const aaveLendingPoolContract = new web3.eth.Contract(aaveLendingPoolABI, aaveLe
 const sushiRouterABI = require('./contracts/sushiswap.json');
 const sushiRouterAddress = '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506';
 const sushiRouterContract = new web3.eth.Contract(sushiRouterABI, sushiRouterAddress);
+
+const quickswapRouterABI = require('./contracts/quickswap-router.json');
+const quickswapRouterAddress = '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff';
+const quickswapRouterContract = new web3.eth.Contract(quickswapRouterABI, quickswapRouterAddress);
 
 const claimCurve = async (claim = true) => {
     const rewards = await curveGaugeContract.methods
@@ -165,29 +170,36 @@ const swapToUSDC = async (extra_wmatic, claim = true) => {
     const USDC_fromWei = _.findKey(web3.utils.unitMap,
                             v => v == (new web3.utils.BN(10).pow(new web3.utils.BN(USDC_decimals))).toString());
 
-    const amount_out = (await sushiRouterContract.methods
-                            .getAmountsOut(wmatic, [WMATIC_TOKEN, USDC_TOKEN])
-                            .call())[1];
-    console.log(`Should yield ${web3.utils.fromWei(amount_out, USDC_fromWei)} USDC`);
+    const swapRouters = [sushiRouterContract, quickswapRouterContract];
+    const swapRouterNames = ['Sushi', 'Quick'];
+
+    const amount_out = _.map(await Promise.all(_.map(swapRouters, router => router.methods
+                                                                        .getAmountsOut(wmatic, [WMATIC_TOKEN, USDC_TOKEN])
+                                                                        .call())),
+                            amounts => new web3.utils.BN(amounts[1]));
+    const bestDeal = _.reduce(amount_out,
+                     (max, amount, routerIndex) => (amount.gt(max) ? { routerIndex: routerIndex, amount: amount } : max),
+                    { amount: BIG_ZERO });
+    console.log(`Best yield ${web3.utils.fromWei(bestDeal.amount, USDC_fromWei)} USDC from ${swapRouterNames[bestDeal.routerIndex]}`);
 
     const deadline = Math.floor(DateTime.now().plus({ minutes: 1 }).toSeconds());
     if(claim) {
         return new Promise((resolve, reject) => {
-            sushiRouterContract.methods
+            swapRouters[bestDeal.routerIndex].methods
                 .swapExactTokensForTokens(wmatic,
-                                            (new web3.utils.BN(amount_out))
-                                                .mul(new web3.utils.BN('99'))
-                                                .div(new web3.utils.BN('100')),
+                                            bestDeal.amount
+                                                .mul(new web3.utils.BN('995'))
+                                                .div(new web3.utils.BN('1000')),
                                             [WMATIC_TOKEN, USDC_TOKEN],
                                             MY_ACCOUNT_ID,
                                             deadline
                                         )
                 .send()
             .on('transactionHash', hash => {
-                console.log(`Sushi Tx hash: '${hash}'`);
+                console.log(`${swapRouterNames[bestDeal.routerIndex]} Tx hash: '${hash}'`);
             })
             .on('confirmation', (number, receipt) => {
-                if(number == 0) { console.log(`Sushi confirmation number: ${number}`); }
+                if(number == 0) { console.log(`${swapRouterNames[bestDeal.routerIndex]} confirmation number: ${number}`); }
             })
             .on('receipt', receipt => {
                 resolve('USDC');
@@ -252,6 +264,9 @@ const repayUSDCDebt = async (claim = true) => {
     sushiRouterContract.options.from = MY_ACCOUNT_ID;
     sushiRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
     sushiRouterContract.options.gas = 1000000;
+    quickswapRouterContract.options.from = MY_ACCOUNT_ID;
+    quickswapRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    quickswapRouterContract.options.gas = 1000000;
     curvePoolContract.options.from = MY_ACCOUNT_ID;
     curvePoolContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
     curvePoolContract.options.gas = 1000000;
