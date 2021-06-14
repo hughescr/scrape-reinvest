@@ -25,7 +25,7 @@ nconf.argv(yargs)
     .file({ file: 'scrape-reinvest.json ' });
 
 const Web3 = require('web3');
-const web3 = new Web3('https://matic-mainnet.chainstacklabs.com');
+const web3 = new Web3('https://rpc-mainnet.matic.network');
 const BIG_ZERO = new web3.utils.BN('0');
 
 const keychain = require('keychain');
