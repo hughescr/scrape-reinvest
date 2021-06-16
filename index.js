@@ -374,19 +374,19 @@ const stakeCurve = async (claim = true) => {
     MY_ACCOUNT_ID = MY_ACCOUNT.address;
 
     curveGaugeContract.options.from = MY_ACCOUNT_ID;
-    curveGaugeContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    curveGaugeContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     curveGaugeContract.options.gas = 1000000;
     aaveIncentivesControllerContract.options.from = MY_ACCOUNT_ID;
-    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     aaveIncentivesControllerContract.options.gas = 1000000;
     sushiRouterContract.options.from = MY_ACCOUNT_ID;
-    sushiRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    sushiRouterContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     sushiRouterContract.options.gas = 1000000;
     quickswapRouterContract.options.from = MY_ACCOUNT_ID;
-    quickswapRouterContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    quickswapRouterContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     quickswapRouterContract.options.gas = 1000000;
     curvePoolContract.options.from = MY_ACCOUNT_ID;
-    curvePoolContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    curvePoolContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     curvePoolContract.options.gas = 1000000;
 
     let wmatic = new web3.utils.BN(await claimCurve(nconf.get('x')));

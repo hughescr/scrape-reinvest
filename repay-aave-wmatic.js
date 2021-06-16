@@ -144,16 +144,16 @@ const repayWMATICDebt = async (claim = true) => {
     MY_ACCOUNT_ID = MY_ACCOUNT.address;
 
     WMATICContract.options.from = MY_ACCOUNT_ID;
-    WMATICContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    WMATICContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     WMATICContract.options.gas = 1000000;
     WMATICDebtContract.options.from = MY_ACCOUNT_ID;
-    WMATICDebtContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    WMATICDebtContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     WMATICDebtContract.options.gas = 1000000;
     aaveIncentivesControllerContract.options.from = MY_ACCOUNT_ID;
-    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     aaveIncentivesControllerContract.options.gas = 1000000;
     aaveWETHGatewayContract.options.from = MY_ACCOUNT_ID;
-    aaveWETHGatewayContract.options.gasPrice = web3.utils.toWei('1', 'gwei');
+    aaveWETHGatewayContract.options.gasPrice = web3.utils.toWei('2', 'gwei');
     aaveWETHGatewayContract.options.gas = 1000000;
 
     let wmatic = new web3.utils.BN(await claimAave(nconf.get('x')));
