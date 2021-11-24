@@ -76,11 +76,11 @@ const aaveLendingPoolABI = require('./contracts/aave-lending-pool.json');
 const aaveLendingPoolAddress = '0x8dff5e27ea6b7ac08ebfdf9eb090f32ee9a30fcf';
 const aaveLendingPoolContract = new web3.eth.Contract(aaveLendingPoolABI, aaveLendingPoolAddress);
 
-const sushiRouterABI = require('./contracts/sushiswap.json');
+const sushiRouterABI = require('./contracts/sushi/swap.json');
 const sushiRouterAddress = '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506';
 const sushiRouterContract = new web3.eth.Contract(sushiRouterABI, sushiRouterAddress);
 
-const quickswapRouterABI = require('./contracts/quickswap-router.json');
+const quickswapRouterABI = require('./contracts/quickswap/router.json');
 const quickswapRouterAddress = '0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff';
 const quickswapRouterContract = new web3.eth.Contract(quickswapRouterABI, quickswapRouterAddress);
 
@@ -213,16 +213,16 @@ const repayUSDCDebt = async (claim = true) => {
     MY_ACCOUNT_ID = MY_ACCOUNT.address;
 
     aaveIncentivesControllerContract.options.from = MY_ACCOUNT_ID;
-    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('5', 'gwei');
+    aaveIncentivesControllerContract.options.gasPrice = web3.utils.toWei('3', 'gwei');
     aaveIncentivesControllerContract.options.gas = 1000000;
     aaveLendingPoolContract.options.from = MY_ACCOUNT_ID;
-    aaveLendingPoolContract.options.gasPrice = web3.utils.toWei('5', 'gwei');
+    aaveLendingPoolContract.options.gasPrice = web3.utils.toWei('3', 'gwei');
     aaveLendingPoolContract.options.gas = 1000000;
     sushiRouterContract.options.from = MY_ACCOUNT_ID;
-    sushiRouterContract.options.gasPrice = web3.utils.toWei('5', 'gwei');
+    sushiRouterContract.options.gasPrice = web3.utils.toWei('3', 'gwei');
     sushiRouterContract.options.gas = 1000000;
     quickswapRouterContract.options.from = MY_ACCOUNT_ID;
-    quickswapRouterContract.options.gasPrice = web3.utils.toWei('5', 'gwei');
+    quickswapRouterContract.options.gasPrice = web3.utils.toWei('3', 'gwei');
     quickswapRouterContract.options.gas = 1000000;
 
     let wmatic = new web3.utils.BN(await claimAave(nconf.get('x')));
