@@ -1,8 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
-const { DateTime } = require('luxon');
-const { inspect, promisify } = require('util');
+const { promisify } = require('util');
 const { logger } = require('@hughescr/logger');
 
 const nconf = require('nconf');
@@ -45,7 +43,7 @@ const convertRewardstoPoolTokens = async (amounts, execute = true) => {
     if(!execute) {
         return ({ USDC: BIG_ZERO, USDT: BIG_ZERO });
     }
-    
+
 };
 
 const depositUSDCandUSDTtoSUSHILP = async (amounts, execute = true) => ({ LP: BIG_ZERO });

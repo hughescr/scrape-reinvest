@@ -1,7 +1,5 @@
 'use strict';
 
-const _ = require('lodash');
-const { DateTime } = require('luxon');
 const { logger } = require('@hughescr/logger');
 const { promisify } = require('util');
 

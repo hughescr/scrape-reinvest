@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const { DateTime } = require('luxon');
 const { promisify } = require('util');
 
 const nconf = require('nconf');
@@ -26,7 +25,6 @@ nconf.argv(yargs)
 
 const Web3 = require('web3');
 const web3 = new Web3('https://rpc-mainnet.matic.network');
-const BIG_ZERO = new web3.utils.BN('0');
 
 const keychain = require('keychain');
 const getPassword = promisify(keychain.getPassword).bind(keychain);
